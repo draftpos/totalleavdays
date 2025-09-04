@@ -390,3 +390,163 @@ def create_summaries_for_period(leave_period):
 def get_employee_summary(employee, leave_period):
     """API to get employee summary data"""
     return get_employee_leave_summary_data(employee, leave_period)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@frappe.whitelist()
+def get_latest_leave_period():
+    """Get the latest leave period by from_date"""
+    try:
+        latest_period = frappe.get_all("Leave Period",
+            fields=["name", "from_date"],
+            order_by="from_date DESC",
+            limit=1
+        )
+        
+        if latest_period:
+            return latest_period[0].name
+        else:
+            return None
+            
+    except Exception as e:
+        frappe.log_error(f"Error getting latest leave period: {str(e)}")
+        return None
+
+@frappe.whitelist()
+def bulk_update_all_employees(leave_period):
+    """Update leave summaries for all active employees"""
+    active_employees = frappe.get_all("Employee",
+        filters={"status": "Active"},
+        fields=["name"]
+    )
+    
+    updated_count = 0
+    
+    for emp in active_employees:
+        try:
+            # Check if summary already exists
+            existing = frappe.get_all("Employee Leave Summary",
+                filters={"employee": emp.name, "leave_period": leave_period},
+                limit=1
+            )
+            
+            if existing:
+                doc = frappe.get_doc("Employee Leave Summary", existing[0].name)
+            else:
+                doc = frappe.new_doc("Employee Leave Summary")
+                doc.employee = emp.name
+                doc.leave_period = leave_period
+            
+            doc.update_summary_data()
+            doc.save()
+            updated_count += 1
+            
+        except Exception as e:
+            frappe.log_error(f"Error updating leave summary for {emp.name}: {str(e)}")
+            continue
+    
+    return updated_count
+
+# Optional: Add automatic period detection based on payroll dates
+@frappe.whitelist()
+def get_leave_period_for_dates(start_date, end_date):
+    """Get leave period that covers the given date range"""
+    try:
+        period = frappe.get_all("Leave Period",
+            filters={
+                "from_date": ["<=", start_date],
+                "to_date": [">=", end_date]
+            },
+            fields=["name"],
+            limit=1
+        )
+        
+        if period:
+            return period[0].name
+        else:
+            # Fallback to latest period if no exact match
+            return get_latest_leave_period()
+            
+    except Exception as e:
+        frappe.log_error(f"Error getting leave period for dates: {str(e)}")
+        return get_latest_leave_period()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import frappe
+from frappe import _
+
+@frappe.whitelist()
+def handle_payroll_event(docname, event_type):
+    """Handle events from Payroll Entry"""
+    try:
+        payroll_entry = frappe.get_doc('Payroll Entry', docname)
+        frappe.msgprint(_('Processing payroll entry: {0}').format(docname))
+        
+        # Your custom logic here
+        if event_type == 'process_leave_days':
+            process_leave_days_for_payroll(payroll_entry)
+            
+        return True
+    except Exception as e:
+        frappe.log_error(_('Error processing payroll event'), str(e))
+        return False
+
+@frappe.whitelist()
+def handle_payroll_submission(payroll_entry, company, start_date, end_date):
+    """Handle payroll submission automatically"""
+    try:
+        frappe.logger().info(f"Payroll submitted: {payroll_entry}, Company: {company}")
+        
+        # Example: Update leave balances for this payroll period
+        update_leave_balances_for_period(company, start_date, end_date)
+        
+        return True
+    except Exception as e:
+        frappe.log_error(_('Error in payroll submission handler'), str(e))
+        return False
+
+def process_leave_days_for_payroll(payroll_entry):
+    """Process leave days for a payroll entry"""
+    # Your implementation here
+    frappe.msgprint(_('Processing leave days for payroll period'))
+
+def update_leave_balances_for_period(company, start_date, end_date):
+    """Update leave balances for a specific period"""
+    # Your implementation here
+    frappe.logger().info(f"Updating leave balances for {company} from {start_date} to {end_date}")
