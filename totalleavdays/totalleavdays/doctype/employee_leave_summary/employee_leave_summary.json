@@ -1,0 +1,120 @@
+{
+  "doctype": "DocType",
+  "name": "Employee Leave Summary",
+  "module": "totalleavdays",
+  "is_submittable": 0,
+  "istable": 0,
+  "naming_rule": "Expression",
+  "autoname": "ELS-.YYYY.-.MM.-.DD.-.#####",
+  "fields": [
+    {
+      "fieldname": "employee",
+      "fieldtype": "Link",
+      "label": "Employee",
+      "options": "Employee",
+      "reqd": 1,
+      "unique": 0
+    },
+    {
+      "fieldname": "employee_name",
+      "fieldtype": "Data",
+      "label": "Employee Name",
+      "read_only": 1,
+      "fetch_from": "employee.employee_name",
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "department",
+      "fieldtype": "Data",
+      "label": "Department",
+      "read_only": 1,
+      "fetch_from": "employee.department",
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "company",
+      "fieldtype": "Link",
+      "label": "Company",
+      "options": "Company",
+      "read_only": 1,
+      "fetch_from": "employee.company",
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "leave_period",
+      "fieldtype": "Link",
+      "label": "Leave Period",
+      "options": "Leave Period",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "total_allocated_days",
+      "fieldtype": "Float",
+      "label": "Total Allocated Days",
+      "read_only": 1,
+      "default": "0",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "total_used_days",
+      "fieldtype": "Float",
+      "label": "Total Used Days",
+      "read_only": 1,
+      "default": "0",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "total_remaining_days",
+      "fieldtype": "Float",
+      "label": "Total Remaining Days",
+      "read_only": 1,
+      "default": "0",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "last_updated",
+      "fieldtype": "Datetime",
+      "label": "Last Updated",
+      "read_only": 1
+    },
+    {
+      "fieldname": "leave_breakdown",
+      "fieldtype": "HTML",
+      "label": "Leave Breakdown"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Active\nInactive",
+      "default": "Active",
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "leave_types",
+      "fieldtype": "Small Text",
+      "label": "Leave Types",
+      "read_only": 1,
+      "hidden": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "export": 1,
+      "print": 1,
+      "report": 1
+    }
+  ],
+  "search_fields": "employee_name,department,leave_types",
+  "title_field": "employee_name",
+  "show_title_field_in_link": 1
+}
