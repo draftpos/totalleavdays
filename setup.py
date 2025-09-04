@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='total-leave-days',  # Use hyphens instead of spaces
+    name='totalleavdays',  # Use hyphens instead of spaces
     version='0.1.0',          # Required: Package version
     author='Wiz',             # Optional: Author name (capitalize if desired)
     author_email='wisdommapeka@gmail.com',  # Optional: Author email
