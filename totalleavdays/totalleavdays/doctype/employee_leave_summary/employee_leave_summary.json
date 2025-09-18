@@ -4,6 +4,7 @@
   "module": "totalleavdays",
   "is_submittable": 0,
   "istable": 0,
+  "autoname": "field:employee_name",
   "fields": [
     {
       "fieldname": "employee",
