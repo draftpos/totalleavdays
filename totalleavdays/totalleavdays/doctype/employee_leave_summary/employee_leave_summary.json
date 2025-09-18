@@ -4,8 +4,6 @@
   "module": "totalleavdays",
   "is_submittable": 0,
   "istable": 0,
-  "naming_rule": "Expression",
-  "autoname": "ELS-.YYYY.-.MM.-.DD.-.#####",
   "fields": [
     {
       "fieldname": "employee",
